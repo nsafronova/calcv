@@ -33,6 +33,7 @@ const appData = {
   rollback: 0,
   count: 0,
   init: function () {
+    appData.checkValue();
     startBtn.addEventListener('click', appData.start)
     plusButton.addEventListener('click', appData.addScreenBlock);
     inputRange.addEventListener('input', appData.getRollback);
@@ -40,6 +41,25 @@ const appData = {
   addTitle: function () {
     document.title = title.textContent;
   },
+  checkValue: () => {
+    screens = document.querySelectorAll('.screen'); //получаем список элементов
+    startBtn.disabled = false; //Разблокируем кнопку
+
+
+    screens.forEach(function (item) {
+      const select = item.querySelector('select');
+      const input = item.querySelector('input');
+      select.addEventListener('input', appData.checkValue) //Вешаем слушатель на каждое поле
+      input.addEventListener('input', appData.checkValue)
+
+      if (select.value == '' || input.value == '') { //Проверяем поля.
+        startBtn.disabled = true; //Если хотя бы одна пара не прошла - блокируем кнопку и выходим из цикла
+      }
+    })
+
+    console.log('aaaaa');
+  },
+
   start: () => {
     appData.addScreens();
     appData.addServices();
@@ -76,6 +96,7 @@ const appData = {
   addScreenBlock: () => {
     const cloneScreen = screens[0].cloneNode(true);
     screens[screens.length - 1].after(cloneScreen);
+    appData.checkValue();
     console.log(cloneScreen);
   },
 
