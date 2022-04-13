@@ -34,9 +34,10 @@ const appData = {
   count: 0,
   init: function () {
     appData.checkValue();
-    startBtn.addEventListener('click', appData.start)
+    startBtn.addEventListener('click', appData.start);
     plusButton.addEventListener('click', appData.addScreenBlock);
     inputRange.addEventListener('input', appData.getRollback);
+    inputRange.addEventListener('input', appData.showResult);
   },
   addTitle: function () {
     document.title = title.textContent;
@@ -49,15 +50,13 @@ const appData = {
     screens.forEach(function (item) {
       const select = item.querySelector('select');
       const input = item.querySelector('input');
-      select.addEventListener('input', appData.checkValue) //Вешаем слушатель на каждое поле
-      input.addEventListener('input', appData.checkValue)
+      select.addEventListener('input', appData.checkValue); //Вешаем слушатель на каждое поле
+      input.addEventListener('input', appData.checkValue);
 
       if (select.value == '' || input.value == '') { //Проверяем поля.
-        startBtn.disabled = true; //Если хотя бы одна пара не прошла - блокируем кнопку и выходим из цикла
+        startBtn.disabled = true; //Если хотя бы одна пара не прошла - блокируем кнопку
       }
-    })
-
-    console.log('aaaaa');
+    });
   },
 
   start: () => {
@@ -66,7 +65,6 @@ const appData = {
     appData.addPrices();
     // appData.logger();
     appData.showResult();
-    console.log(appData);
   },
   showResult: () => {
     total.value = appData.screenPrice;
@@ -89,7 +87,7 @@ const appData = {
         price: +select.value * +input.value
       });
       appData.count += +input.value;
-    })
+    });
     console.log(appData.screens);
   },
 
@@ -109,7 +107,7 @@ const appData = {
       if (check.checked) {
         appData.servicesPercent[label.textContent] = +input.value;
       }
-    })
+    });
 
     otherItemsNumber.forEach(function (item) {
       const check = item.querySelector('input[type=checkbox]');
@@ -119,17 +117,21 @@ const appData = {
       if (check.checked) {
         appData.servicesNumber[label.textContent] = +input.value;
       }
-    })
+    });
   },
 
   getRollback: (event) => {
+
     appData.rollback = inputRange.value;
-    inputRangeValue.textContent = event.target.value + '%'
+    inputRangeValue.textContent = event.target.value + '%';
+    appData.addPrices();
+
   },
 
   addPrices: () => {
+
     appData.screenPrice = appData.screens.reduce(function (sum, item) {
-      return sum + item.price
+      return sum + item.price;
     }, 0);
 
     for (let key in appData.servicesNumber) {
